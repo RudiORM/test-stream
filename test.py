@@ -46,15 +46,15 @@ if uploaded_file is not None:
         frames.append(go.Frame(
             data=[
                 # Line trace for connecting points
-                go.Scatter3d(x=line_df['conventional to experimental'],
-                             y=line_df['constrained to autonomy'],
-                             z=line_df['passive to active'],
+                go.Scatter3d(x=line_df['conventional to conceptual'],
+                             y=line_df['confined to autonomous'],
+                             z=line_df['Peripheral to Immersive'],
                              mode='lines',
                              line=dict(color='black', width=3)),
                 # Scatter trace for the points with hover text for the 'Title'
-                go.Scatter3d(x=filtered_df['conventional to experimental'],
-                             y=filtered_df['constrained to autonomy'],
-                             z=filtered_df['passive to active'],
+                go.Scatter3d(x=filtered_df['conventional to conceptual'],
+                             y=filtered_df['confined to autonomous'],
+                             z=filtered_df['Peripheral to Immersive'],
                              mode='markers',
                              marker=dict(size=7, color=point_colors),
                              hovertext=filtered_df['Title'],  # Hover text for the Title
@@ -68,9 +68,9 @@ if uploaded_file is not None:
 
     # Set axis limits and labels, ensuring the scales stay fixed and set aspect ratio for a cube
     fig.update_layout(scene=dict(
-        xaxis=dict(range=[0, 10], title='conventional to experimental', autorange=False),
-        yaxis=dict(range=[0, 10], title='constrained to autonomy', autorange=False),
-        zaxis=dict(range=[0, 10], title='passive to active', autorange=False),
+        xaxis=dict(range=[0, 10], title='conventional to conceptual', autorange=False),
+        yaxis=dict(range=[0, 10], title='confined to autonomous', autorange=False),
+        zaxis=dict(range=[0, 10], title='Peripheral to Immersive', autorange=False),
         aspectmode="cube"  # Ensures that the x, y, and z axes have equal scaling
     ))
 
