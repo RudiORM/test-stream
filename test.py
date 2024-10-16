@@ -40,7 +40,10 @@ if uploaded_file is not None:
         line_df = df[df['Year'] <= year].sort_values(by='Year')  # Sort points by Year for proper line connections
         
         # Map colors based on 'Type' for the filtered points
-        point_colors = filtered_df['Type'].map(color_map)
+        point_colors = df['Type'].map(color_map)
+        
+        # Define marker sizes: small for inactive points, large for active points
+        marker_sizes = [3 if not (row['Year'] <= year <= row['End year']) else 10 for _, row in df.iterrows()]
 
         # Append frame for both points and line
         frames.append(go.Frame(
@@ -53,12 +56,12 @@ if uploaded_file is not None:
                              hoverinfo='skip',
                              line=dict(color='black', width=3)),
                 # Scatter trace for the points with hover text for the 'Title'
-                go.Scatter3d(x=filtered_df['conventional to conceptual'],
-                             y=filtered_df['confined to autonomous'],
-                             z=filtered_df['Peripheral to Immersive'],
+                go.Scatter3d(x=df['conventional to conceptual'],
+                             y=df['confined to autonomous'],
+                             z=df['Peripheral to Immersive'],
                              mode='markers',
-                             marker=dict(size=7, color=point_colors),
-                             hovertext=filtered_df['Title'],  # Hover text for the Title
+                             marker=dict(size=marker_sizes, color=point_colors),
+                             hovertext=df['Title'],  # Hover text for the Title
                              hoverinfo='text')  # Show only the text on hover
             ],
             name=str(year)
