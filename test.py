@@ -50,7 +50,7 @@ if uploaded_file is not None:
                              y=line_df['confined to autonomous'],
                              z=line_df['Peripheral to Immersive'],
                              mode='lines',
-                             hoverinfo='skip'
+                             hoverinfo='skip',
                              line=dict(color='black', width=3)),
                 # Scatter trace for the points with hover text for the 'Title'
                 go.Scatter3d(x=filtered_df['conventional to conceptual'],
