@@ -17,17 +17,19 @@ if uploaded_file is not None:
         'Exhibition': '#003f5c',   # Dark Blue
         'Festival': '#374c80',     # Blue
         'Initiative': '#7a5195',   # Purple
-        'Film festival': '#bc5090',# Pinkish Purple
-        'Multimedia': '#ef5675',   # Red
+        'Performance': '#bc5090',# Pinkish Purple
         'Talk': '#ff764a',         # Orange
         'Film': '#ffa600'          # Yellowish Orange
     }
+
+    df['color']=df['Type'].apply(lambda x: color_map[x])
 
     # Create a blank figure object
     fig = go.Figure()
 
     # Add the initial empty trace for the points and lines (to create the base structure)
-    fig.add_trace(go.Scatter3d(x=[], y=[], z=[], mode='markers', marker=dict(size=5)))
+    fig.add_trace(go.Scatter3d(x=[], y=[], z=[], mode='markers', marker=dict(size=0)))
+    fig.add_trace(go.Scatter3d(x=[], y=[], z=[], mode='markers', marker=dict(size=0)))
     fig.add_trace(go.Scatter3d(x=[], y=[], z=[], mode='lines', line=dict(color='black', width=3)))
 
     # Create frames for both points and lines, but do them independently
@@ -40,7 +42,6 @@ if uploaded_file is not None:
         line_df = df[df['Year'] <= year].sort_values(by='Year')  # Sort points by Year for proper line connections
         
         # Map colors based on 'Type' for the filtered points
-        point_colors = filtered_df['Type'].map(color_map)
 
         # Append frame for both points and line
         frames.append(go.Frame(
@@ -48,18 +49,29 @@ if uploaded_file is not None:
                 # Line trace for connecting points
                 go.Scatter3d(x=line_df['conventional to conceptual'],
                              y=line_df['confined to autonomous'],
-                             z=line_df['Peripheral to Immersive'],
+                             z=line_df['Passive to Immersive'],
                              mode='lines',
                              hoverinfo='skip',
                              line=dict(color='black', width=3)),
+
+                go.Scatter3d(x=line_df['conventional to conceptual'],
+                             y=line_df['confined to autonomous'],
+                             z=line_df['Passive to Immersive'],
+                             mode='markers',
+                             marker=dict(size=5, color=list(line_df['color'])),
+                             hovertext=line_df['Title'],  # Hover text for the Title
+                             hoverinfo='text'),
                 # Scatter trace for the points with hover text for the 'Title'
                 go.Scatter3d(x=filtered_df['conventional to conceptual'],
                              y=filtered_df['confined to autonomous'],
-                             z=filtered_df['Peripheral to Immersive'],
+                             z=filtered_df['Passive to Immersive'],
                              mode='markers',
-                             marker=dict(size=7, color=point_colors),
+                             marker=dict(size=12, color=list(filtered_df['color'])),
                              hovertext=filtered_df['Title'],  # Hover text for the Title
-                             hoverinfo='text')  # Show only the text on hover
+                             hoverinfo='text'),
+            
+           
+            
             ],
             name=str(year)
         ))
@@ -69,11 +81,13 @@ if uploaded_file is not None:
 
     # Set axis limits and labels, ensuring the scales stay fixed and set aspect ratio for a cube
     fig.update_layout(scene=dict(
-        xaxis=dict(range=[0, 10], title='conventional to conceptual', autorange=False),
-        yaxis=dict(range=[0, 10], title='confined to autonomous', autorange=False),
-        zaxis=dict(range=[0, 10], title='Peripheral to Immersive', autorange=False),
+        xaxis=dict(range=[0, 11], title='conventional to conceptual', autorange=False, tickvals=list(range(0, 11))),
+        yaxis=dict(range=[0, 11], title='confined to autonomous', autorange=False, tickvals=list(range(0, 11))),
+        zaxis=dict(range=[0, 11], title='Passive to Immersive', autorange=False, tickvals=list(range(0, 11))),
         aspectmode="cube"  # Ensures that the x, y, and z axes have equal scaling
     ))
+
+    fig.update_layout(width=800, height=800)
 
     # Add the animation settings (play/pause buttons and slider)
     fig.update_layout(updatemenus=[dict(type="buttons",
